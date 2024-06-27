@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common'
+import { Controller, Get, Render } from '@nestjs/common'
 import { AppService } from './app.service'
 
 @Controller()
@@ -6,22 +6,26 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
-  homePage(): string {
-    return 'Home Page'
+  @Render('home')
+  homePage() {
+    return { title: 'Home Page' }
   }
 
   @Get('login')
-  loginPage(): string {
-    return 'Login Page'
+  @Render('login')
+  loginPage() {
+    return { title: 'Login Page' }
   }
 
-  @Get('/signup')
-  signup(): string {
-    return 'Register Page'
+  @Get('register')
+  @Render('register')
+  signup() {
+    return { title: 'Register Page' }
   }
 
   @Get('reset-password')
-  resetPassword(): string {
-    return 'Reset Password Page'
+  @Render('reset-password')
+  resetPassword() {
+    return { title: 'Reset Password Page' }
   }
 }
