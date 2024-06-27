@@ -2,11 +2,15 @@ import { NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { ValidationPipe } from '@nestjs/common'
+import { join } from 'path'
+import { NestExpressApplication } from '@nestjs/platform-express'
 
 async function main() {
   const PORT = process.env.PORT ?? ''
 
-  const app = await NestFactory.create(AppModule, { rawBody: true })
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    rawBody: true,
+  })
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -33,6 +37,10 @@ async function main() {
 
   const document = SwaggerModule.createDocument(app, options)
   SwaggerModule.setup('swagger', app, document)
+
+  app.useStaticAssets(join(__dirname, '..', 'public'))
+  app.setBaseViewsDir(join(__dirname, '..', 'views'))
+  app.setViewEngine('hbs')
 
   await app
     .listen(PORT || 3000)
